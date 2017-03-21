@@ -1,9 +1,13 @@
 package com.liang.bitmapcache.loader;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.LruCache;
+import android.widget.ImageView;
 
+import com.jakewharton.disklrucache.DiskLruCache;
 import com.liang.bitmapcache.R;
 
 import java.util.concurrent.Executor;
@@ -51,8 +55,47 @@ public class ImageLoader {
 
     };
 
+    private Context mContext;
+    private ImageResizer mImageResizer = new ImageResizer();
+    private LruCache<String, Bitmap> mMemoryCache;
+    private DiskLruCache mDiskLruCache;
+
     private ImageLoader(Context context) {
 
     }
 
+    public static ImageLoader build(Context context) {
+        return new ImageLoader(context);
+    }
+
+    private void addBitmapToMemoryCache(String key, Bitmap bitmap) {
+
+    }
+
+    private Bitmap getBitmapFromMemCache(String key) {
+        return mMemoryCache.get(key);
+    }
+
+    public void bindBitmap(final String uri, final ImageView imageView) {
+
+    }
+
+    public void bindBitmap(final String uri, final ImageView imageView, final int reqWidth,
+                           final int reqHeight) {
+
+    }
+
+    public Bitmap loadBitmap(String uri, int reqWidth, int reqHeight) {
+
+        return null;
+    }
+
+    private Bitmap loadBitmapFromMemCache(String uri) {
+
+        return null;
+    }
+
+    private Bitmap loadBitmapFromHttp(String url, int reqWidth, int reqHeight) {
+        return null;
+    }
 }
