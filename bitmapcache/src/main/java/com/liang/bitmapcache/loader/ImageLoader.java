@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.ContactsContract;
 import android.support.v4.util.LruCache;
+import android.util.Log;
 import android.util.StringBuilderPrinter;
 import android.widget.ImageView;
 
@@ -13,6 +14,8 @@ import com.jakewharton.disklrucache.DiskLruCache;
 import com.liang.bitmapcache.R;
 
 import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.concurrent.Executor;
@@ -123,12 +126,57 @@ public class ImageLoader {
         return null;
     }
 
-    private Bitmap loadBitmapFromHttp(String url, int reqWidth, int reqHeight) {
-        return null;
+    private Bitmap loadBitmapFromHttp(String url, int reqWidth, int reqHeight) throws IOException {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            throw new RuntimeException("Can not visit network from UI thread.");
+        }
+
+        if (mDiskLruCache == null) {
+            return null;
+        }
+
+        String key = hashKeyFromUrl(url);
+        try {
+            DiskLruCache.Editor editor = mDiskLruCache.edit(key);
+            if (editor != null) {
+                OutputStream outPutStream = editor.newOutputStream(DISK_CACHE_INDEX);
+                if (downloadUrlToStream(url, outPutStream)) {
+                    editor.commit();
+                } else {
+                    editor.abort();
+                }
+                mDiskLruCache.flush();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return loadBitmapFromDiskCache(url, reqWidth, reqHeight);
     }
 
-    private Bitmap loadBitmapFromDiskCache(String url, int reqWidth, int reqHeight) {
-        return null;
+    private Bitmap loadBitmapFromDiskCache(String url, int reqWidth, int reqHeight) throws IOException {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            Log.w(TAG, "Load bitmap  from UI thread, it's not recommended!");
+        }
+
+        if (mDiskLruCache == null) {
+            return null;
+        }
+
+        Bitmap bitmap = null;
+        String key = hashKeyFromUrl(url);
+        DiskLruCache.Snapshot snapshot = mDiskLruCache.get(key);
+        if (snapshot != null) {
+            FileInputStream fileInputStream =
+                    (FileInputStream)snapshot.getInputStream(DISK_CACHE_INDEX);
+            FileDescriptor fileDescriptor = fileInputStream.getFD();
+            bitmap = mImageResizer.decodeSampledBitmapFromDescriptor(fileDescriptor, reqWidth,
+                    reqHeight);
+            if (bitmap != null) {
+                addBitmapToMemoryCache(key, bitmap);
+            }
+        }
+        return bitmap;
     }
 
     public boolean downloadUrlToStream(String urlString, OutputStream outputStream) {
