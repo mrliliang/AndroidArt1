@@ -4,12 +4,17 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.LruCache;
+import android.provider.ContactsContract;
+import android.support.v4.util.LruCache;
+import android.util.StringBuilderPrinter;
 import android.widget.ImageView;
 
 import com.jakewharton.disklrucache.DiskLruCache;
 import com.liang.bitmapcache.R;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadFactory;
@@ -61,7 +66,28 @@ public class ImageLoader {
     private DiskLruCache mDiskLruCache;
 
     private ImageLoader(Context context) {
+        mContext = context.getApplicationContext();
+        int maxMemmory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+        int cacheSize = maxMemmory / 8;
+        mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
+            @Override
+            protected int sizeOf(String key, Bitmap bitmap) {
+                return bitmap.getRowBytes() * bitmap.getHeight() / 1024;
+            }
+        };
 
+        File diskCacheDir = getDiskCacheDir(mContext, "bitmap");
+        if (!diskCacheDir.exists()) {
+            diskCacheDir.mkdir();
+        }
+        if (getUsableSpace(diskCacheDir) > DISK_CACHE_SIZE) {
+            try {
+                mDiskLruCache = DiskLruCache.open(diskCacheDir, 1, 1, DISK_CACHE_SIZE);
+                isDiskLruCacheCreated = true;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static ImageLoader build(Context context) {
@@ -69,7 +95,9 @@ public class ImageLoader {
     }
 
     private void addBitmapToMemoryCache(String key, Bitmap bitmap) {
-
+        if (getBitmapFromMemCache(key) == null) {
+            mMemoryCache.put(key, bitmap);
+        }
     }
 
     private Bitmap getBitmapFromMemCache(String key) {
@@ -97,5 +125,50 @@ public class ImageLoader {
 
     private Bitmap loadBitmapFromHttp(String url, int reqWidth, int reqHeight) {
         return null;
+    }
+
+    private Bitmap loadBitmapFromDiskCache(String url, int reqWidth, int reqHeight) {
+        return null;
+    }
+
+    public boolean downloadUrlToStream(String urlString, OutputStream outputStream) {
+        return false;
+    }
+
+    private Bitmap downloadBitmapFromUrl(String urlString) {
+        return null;
+    }
+
+    private String hashKeyFromUrl(String url) {
+        return null;
+    }
+
+    private String bytesToHexString(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < bytes.length; i++) {
+
+        }
+
+        return sb.toString();
+    }
+
+    public File getDiskCacheDir(Context context, String uniqueName) {
+        return null;
+    }
+
+    private long getUsableSpace(File path) {
+        return 0;
+    }
+
+    private static class LoaderResult {
+        public ImageView imageView;
+        public String url;
+        public Bitmap bitmap;
+
+        public LoaderResult(ImageView imageView, String url, Bitmap bitmap) {
+            this.imageView = imageView;
+            this.url = url;
+            this.bitmap = bitmap;
+        }
     }
 }
