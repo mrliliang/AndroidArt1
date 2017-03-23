@@ -1,7 +1,10 @@
 package com.liang.bitmapcache;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.AbsListView;
 import android.widget.GridView;
 
 import com.liang.bitmapcache.ui.ImageAdapter;
@@ -10,7 +13,7 @@ import com.liang.bitmapcache.utils.MyUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AbsListView.OnScrollListener {
     private static final String TAG = "MainActivity";
 
     private GridView mImageGridView;
@@ -19,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private List<String> mUrlList = new ArrayList<String>();
 
 
+    private int mImageWidth = 0;
     private boolean isWifi = false;
     private boolean mCanGetBitmapFromNetWork = false;
 
@@ -74,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         }
         int screenWidth = MyUtils.getScreenMetrics(this).widthPixels;
         int space = (int)MyUtils.dp2px(this, 20f);
-        int imageWidth = (screenWidth - space) / 3;
+        mImageWidth = (screenWidth - space) / 3;
         isWifi = MyUtils.isWifi(this);
         if (isWifi) {
             mCanGetBitmapFromNetWork = true;
@@ -82,6 +86,43 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        mImageGridView = (GridView)findViewById(R.id.gridView1);
+        mImageAdapter = new ImageAdapter(this);
+        mImageAdapter.setUrlList(mUrlList);
+        mImageAdapter.setImageWidth(mImageWidth);
+        mImageAdapter.setCanGetBitmapFromNetWork(mCanGetBitmapFromNetWork);
+        mImageGridView.setAdapter(mImageAdapter);
+        mImageGridView.setOnScrollListener(this);
+
+        if (!isWifi) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("初次使用会从网络下载大概5MB的图片，确认要下载吗？");
+            builder.setTitle("注意");
+            builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    mCanGetBitmapFromNetWork = true;
+                    mImageAdapter.setCanGetBitmapFromNetWork(mCanGetBitmapFromNetWork);
+                    mImageAdapter.notifyDataSetChanged();
+                }
+            });
+            builder.setNegativeButton("否", null);
+            builder.show();
+        }
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+        if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+            mImageAdapter.setGridViewIdle(true);
+            mImageAdapter.notifyDataSetChanged();
+        } else {
+            mImageAdapter.setGridViewIdle(false);
+        }
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
     }
 }
