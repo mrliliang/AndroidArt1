@@ -1,12 +1,12 @@
 package com.liang.ipc;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import com.liang.ipc.manager.UserManager;
+import com.liang.ipc.Manager.UserManager;
 
 public class SecondActivity extends AppCompatActivity {
     private static final String TAG = "SecondActivity";
@@ -16,7 +16,7 @@ public class SecondActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
 
-        Log.d(TAG, "UserManager.sUserid = " + UserManager.sUserid);
+        Log.d(TAG, "UserManager.sUserId = " + UserManager.sUserId);
 
         findViewById(R.id.button1).setOnClickListener(new View.OnClickListener() {
             @Override
