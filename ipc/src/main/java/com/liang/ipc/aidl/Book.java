@@ -8,7 +8,17 @@ import android.os.Parcelable;
  */
 
 public class Book implements Parcelable {
-    protected Book(Parcel in) {
+    public int bookId;
+    public String bookName;
+
+    public Book(int bookId, String bookName) {
+        this.bookId = bookId;
+        this.bookName = bookName;
+    }
+
+    private Book(Parcel in) {
+        bookId = in.readInt();
+        bookName = in.readString();
     }
 
     public static final Creator<Book> CREATOR = new Creator<Book>() {
@@ -29,6 +39,8 @@ public class Book implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeInt(bookId);
+        out.writeString(bookName);
     }
 }
