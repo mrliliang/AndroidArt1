@@ -1,5 +1,5 @@
 // IBookManager.aidl
-package com.liang.ipc;
+package com.liang.ipc.aidl;
 
 // Declare any non-default types here with import statements
 import com.liang.ipc.aidl.Book;

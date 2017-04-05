@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import com.liang.ipc.Manager.UserManager;
+import com.liang.ipc.manager.UserManager;
 
 public class SecondActivity extends AppCompatActivity {
     private static final String TAG = "SecondActivity";
