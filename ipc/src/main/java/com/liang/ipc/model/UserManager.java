@@ -1,7 +1,7 @@
-package com.liang.ipc.manager;
+package com.liang.ipc.model;
 
 /**
- * Created by liliang on 2017/3/24.
+ * Created by liliang on 2017/4/6.
  */
 
 public class UserManager {

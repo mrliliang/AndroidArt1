@@ -1,4 +1,4 @@
-package com.liang.ipc.Model;
+package com.liang.ipc.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
