@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.liang.ipc.manager.UserManager;
+
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";

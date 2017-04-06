@@ -1,4 +1,4 @@
-package com.liang.ipc.model;
+package com.liang.ipc.manager;
 
 /**
  * Created by liliang on 2017/4/6.
