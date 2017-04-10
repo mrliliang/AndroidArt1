@@ -3,6 +3,8 @@ package com.liang.ipc.utils;
 import android.app.ActivityManager;
 import android.content.Context;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -26,5 +28,15 @@ public class MyUtils {
         }
 
         return null;
+    }
+
+    public static void close(Closeable closeable) {
+        try {
+            if (closeable != null) {
+                closeable.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
