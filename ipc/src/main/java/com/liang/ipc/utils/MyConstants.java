@@ -7,7 +7,13 @@ import android.os.Environment;
  */
 
 public class MyConstants {
-    public static final String CHAPTER_2_PATH = Environment.getExternalStorageDirectory().getPath()
+//    public static final String CHAPTER_2_PATH = Environment.getExternalStorageDirectory().getPath()
+//            + "/singwhatiwanna/chapter_2/";
+//
+//    public static final String CACHE_FILE_PATH = CHAPTER_2_PATH + "usercache";
+
+    public static final String CHAPTER_2_PATH = Environment
+            .getExternalStorageDirectory().getPath()
             + "/singwhatiwanna/chapter_2/";
 
     public static final String CACHE_FILE_PATH = CHAPTER_2_PATH + "usercache";

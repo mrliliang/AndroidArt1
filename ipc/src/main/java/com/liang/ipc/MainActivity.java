@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.liang.ipc.manager.UserManager;
 import com.liang.ipc.model.User;
@@ -47,7 +48,24 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                User user = new User(1, "Hello world", false);
+//                User user = new User(1, "Hello world", false);
+//                File dir = new File(MyConstants.CHAPTER_2_PATH);
+//                if (!dir.exists()) {
+//                    dir.mkdir();
+//                }
+//                File cachedFile = new File(dir, "usercache");
+//                ObjectOutputStream objectOutputStream = null;
+//                try {
+//                    cachedFile.createNewFile();
+//                    objectOutputStream = new ObjectOutputStream(new FileOutputStream(cachedFile));
+//                    objectOutputStream.writeObject(user);
+//                    Log.d(TAG, "persist user:" + user);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                } finally {
+//                    MyUtils.close(objectOutputStream);
+//                }
+                User user = new User(1, "hello world", false);
                 File dir = new File(MyConstants.CHAPTER_2_PATH);
                 if (!dir.exists()) {
                     dir.mkdirs();
@@ -55,11 +73,13 @@ public class MainActivity extends AppCompatActivity {
                 File cachedFile = new File(MyConstants.CACHE_FILE_PATH);
                 ObjectOutputStream objectOutputStream = null;
                 try {
-                    objectOutputStream = new ObjectOutputStream(new FileOutputStream(cachedFile));
+                    objectOutputStream = new ObjectOutputStream(
+                            new FileOutputStream(cachedFile));
                     objectOutputStream.writeObject(user);
                     Log.d(TAG, "persist user:" + user);
                 } catch (IOException e) {
                     e.printStackTrace();
+                    Log.d(TAG, "persist fail");
                 } finally {
                     MyUtils.close(objectOutputStream);
                 }
