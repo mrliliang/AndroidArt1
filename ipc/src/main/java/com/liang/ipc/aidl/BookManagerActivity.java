@@ -26,6 +26,11 @@ public class BookManagerActivity extends AppCompatActivity {
                 List<Book> list = bookManager.getBookList();
                 Log.i(TAG, "query book list, list type:" + list.getClass().getCanonicalName());
                 Log.i(TAG, "query book list:" + list.toString());
+
+                Book newBook = new Book(3, "Android开发艺术探索");
+                bookManager.addBook(newBook);
+                List<Book> newList = bookManager.getBookList();
+                Log.i(TAG, "query book list:" + newList.toString());
             } catch (RemoteException e) {
                 e.printStackTrace();
             }

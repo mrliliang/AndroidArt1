@@ -43,4 +43,9 @@ public class Book implements Parcelable {
         out.writeInt(bookId);
         out.writeString(bookName);
     }
+
+    @Override
+    public String toString() {
+        return String.format("[bookId:%s, bookName:%s]", bookId, bookName);
+    }
 }
