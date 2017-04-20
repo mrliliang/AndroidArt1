@@ -2,10 +2,13 @@ package com.liang.ipc.aidl;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Binder;
 import android.os.IBinder;
+import android.os.Parcel;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
+import android.os.SystemClock;
 import android.util.Log;
 
 import java.util.List;
@@ -26,9 +29,28 @@ public class BookManagerService extends Service {
             new RemoteCallbackList<IOnNewBookArrivedListener>();
 
     private Binder mBinder = new IBookManager.Stub() {
+        @Override
+        public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
+            int check = checkCallingOrSelfPermission("com.liang.ipc.permission" +
+                    ".ACCESS_BOOK_SERVICE");
+            if (check == PackageManager.PERMISSION_DENIED) {
+                return false;
+            }
+
+            String packageName = null;
+            String[] packages = getPackageManager().getPackagesForUid(getCallingUid());
+            if (packages != null && packages.length > 0) {
+                packageName = packages[0];
+            }
+            if (!packageName.startsWith("com.liang")) {
+                return false;
+            }
+            return super.onTransact(code, data, reply, flags);
+        }
 
         @Override
         public List<Book> getBookList() throws RemoteException {
+            SystemClock.sleep(7000);
             return mBookList;
         }
 
@@ -66,6 +88,10 @@ public class BookManagerService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
+        int check = checkCallingOrSelfPermission("com.liang.ipc.permission.ACCESS_BOOK_SERVICE");
+        if (check == PackageManager.PERMISSION_DENIED) {
+            return null;
+        }
         return mBinder;
     }
 
@@ -104,6 +130,8 @@ public class BookManagerService extends Service {
         }
         mListenerList.finishBroadcast();
     }
+
+
 
     private class ServiceWorker implements Runnable {
         @Override

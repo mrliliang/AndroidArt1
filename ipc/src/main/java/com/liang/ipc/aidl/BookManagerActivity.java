@@ -11,6 +11,8 @@ import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 import com.liang.ipc.R;
 
@@ -36,12 +38,28 @@ public class BookManagerActivity extends AppCompatActivity {
         }
     };
 
+    private IBinder.DeathRecipient mmDeathRecipient = new IBinder.DeathRecipient() {
+
+        @Override
+        public void binderDied() {
+            Log.d(TAG, "binder died. tname:" + Thread.currentThread().getName());
+            if (mRemoteBookManager == null) {
+                return;
+            }
+
+            mRemoteBookManager.asBinder().unlinkToDeath(mmDeathRecipient, 0);
+            mRemoteBookManager = null;
+            // TODO: 2017/4/20  重新绑定远程Service
+        }
+    };
+
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             IBookManager bookManager = IBookManager.Stub.asInterface(service);
+            mRemoteBookManager = bookManager;
             try {
-                mRemoteBookManager = bookManager;
+                mRemoteBookManager.asBinder().linkToDeath(mmDeathRecipient, 0);
                 List<Book> list = bookManager.getBookList();
                 Log.i(TAG, "query book list, list type:" + list.getClass().getCanonicalName());
                 Log.i(TAG, "query book list:" + list.toString());
@@ -61,6 +79,7 @@ public class BookManagerActivity extends AppCompatActivity {
         public void onServiceDisconnected(ComponentName name) {
             mRemoteBookManager = null;
             Log.e(TAG, "binder died.");
+            Log.d(TAG, "onServiceDisconnected. tname:" + Thread.currentThread().getName());
         }
     };
 
@@ -91,5 +110,21 @@ public class BookManagerActivity extends AppCompatActivity {
         }
         unbindService(mConnection);
         super.onDestroy();
+    }
+
+    public void onButton1Click(View view) {
+        Toast.makeText(this, "click button1", Toast.LENGTH_SHORT).show();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (mRemoteBookManager != null) {
+                    try {
+                        List<Book> newList = mRemoteBookManager.getBookList();
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
     }
 }
