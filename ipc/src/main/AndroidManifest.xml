@@ -2,12 +2,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.liang.ipc">
 
-    <permission android:name="com.liang.ipc.permission.ACCESS_BOOK_SERVICE"
+    <permission
+        android:name="com.liang.ipc.permission.ACCESS_BOOK_SERVICE"
+        android:protectionLevel="normal"/>
+    <permission
+        android:name="com.liang.ipc.PROVIDER"
         android:protectionLevel="normal"/>
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="com.liang.ipc.permission.ACCESS_BOOK_SERVICE"/>
+    <uses-permission android:name="com.liang.ipc.PROVIDER"/>
 
     <application
         android:name=".MyApplication"
@@ -47,7 +52,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
-                <!--<category android:name="android.intent.category.LAUNCHER"/>-->
+                <!-- <category android:name="android.intent.category.LAUNCHER"/> -->
             </intent-filter>
         </activity>
 
@@ -59,6 +64,23 @@
         </service>
 
         <activity android:name=".aidl.BookManagerActivity">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN"/>-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER"/>-->
+            <!--</intent-filter>-->
+        </activity>
+
+        <provider
+            android:name=".provider.BookProvider"
+            android:authorities="com.liang.ipc.book.provider"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="com.liang.ipc.PROVIDER"
+            android:process=":provider">
+        </provider>
+
+        <activity android:name=".provider.ProviderActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
