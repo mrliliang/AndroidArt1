@@ -21,6 +21,10 @@ public class User implements Parcelable, Serializable {
 
     public Book book;
 
+    public User() {
+
+    }
+
     public User(int userId, String userName, boolean isMale) {
         this.userId = userId;
         this.userName = userName;
@@ -58,5 +62,11 @@ public class User implements Parcelable, Serializable {
         userName = in.readString();
         isMale = in.readInt() == 1;
         book = in.readParcelable(Thread.currentThread().getContextClassLoader());
+    }
+
+    @Override
+    public String toString() {
+        return String.format("User:{userId:%s, userName:%s, isMale:%s}, with child:{%s}",
+                userId, userName, isMale, book);
     }
 }
