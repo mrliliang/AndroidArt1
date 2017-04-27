@@ -82,7 +82,7 @@ public class TCPServerService extends Service {
     private void responseClient(Socket client) throws IOException {
         BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
         PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(client
-                .getOutputStream())));
+                .getOutputStream())), true);
         out.println("欢迎来到聊天室");
         while (!mIsServiceDestoryed) {
             String str = in.readLine();

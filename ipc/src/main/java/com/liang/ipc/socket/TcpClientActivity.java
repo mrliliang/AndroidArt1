@@ -45,7 +45,8 @@ public class TcpClientActivity extends AppCompatActivity implements View.OnClick
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MESSAGE_RECEIVE_NEW_MSG:
-                    mMessageEditText.append((String)msg.obj);
+                    mMessageTextView.setText(mMessageTextView.getText()
+                            + (String) msg.obj);
                     break;
                 case MESSAGE_SOCKET_CONNNECTED:
                     mSendButton.setEnabled(true);
