@@ -96,6 +96,10 @@ public class BinderPool {
 
     public static class BinderPoolImpl extends IBinderPool.Stub {
 
+        public BinderPoolImpl() {
+            super();
+        }
+
         @Override
         public IBinder queryBinder(int binderCode) throws RemoteException {
             IBinder binder = null;
