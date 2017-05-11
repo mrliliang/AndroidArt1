@@ -1,1 +1,1 @@
-include ':app', ':jnitestapp', ':bitmapcache', ':ipc'
+include ':app', ':jnitestapp', ':bitmapcache', ':ipc', ':viewevent'
