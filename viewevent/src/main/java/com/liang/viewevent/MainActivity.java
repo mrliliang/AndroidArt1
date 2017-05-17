@@ -1,4 +1,4 @@
-package com.example.viewevent;
+package com.liang.viewevent;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
