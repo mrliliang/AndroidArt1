@@ -1,19 +1,28 @@
-<?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<com.liang.viewevent.ui.RevealLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.liang.viewevent.MainActivity">
+    android:orientation="vertical"
+    android:padding="12dp"
+    tools:context="${relativePackage}.${activityClass}" >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+    <Button
+        android:id="@+id/button1"
+        style="@style/AppTheme.Button.Green"
+        android:onClick="onButtonClick"
+        android:text="View基础" />
 
-</android.support.constraint.ConstraintLayout>
+    <Button
+        android:id="@+id/button2"
+        style="@style/AppTheme.Button.Green"
+        android:onClick="onButtonClick"
+        android:text="滑动冲突场景1-外部拦截" />
+
+    <Button
+        android:id="@+id/button3"
+        style="@style/AppTheme.Button.Green"
+        android:onClick="onButtonClick"
+        android:text="滑动冲突场景1-内部拦截" />
+
+</com.liang.viewevent.ui.RevealLayout>
