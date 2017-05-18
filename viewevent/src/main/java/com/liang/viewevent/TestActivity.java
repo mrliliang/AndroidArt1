@@ -7,6 +7,7 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -31,7 +32,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
                     mCount++;
                     if (mCount <= FRAME_COUNT) {
                         float fraction = mCount / (float) FRAME_COUNT;
-                        int scrollX = (int) (fraction * 100);
+                        int scrollX = (int) (fraction * 100) * (-1);
                         mButton1.scrollTo(scrollX, 0);
                         mHandler.sendEmptyMessageDelayed(MESSAGE_SCROLL_TO, DELAY_TIME);
                     }
@@ -72,7 +73,19 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
+        if (v == mButton1) {
+//            mButton1.setTranslationX(100);
+//            Log.d(TAG, "button1.left=" + mButton1.getLeft());
+//            Log.d(TAG, "button1.x=" + mButton1.getX());
+//            ObjectAnimator.ofFloat(mButton1, "translationX", 0, 100).setDuration(1000).start();
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) mButton1.getLayoutParams();
+            params.width += 100;
+            params.leftMargin += 100;
+            mButton1.requestLayout();
+            mButton1.setLayoutParams(params);
 
+//            mHandler.sendEmptyMessageDelayed(MESSAGE_SCROLL_TO, DELAY_TIME);
+        }
     }
 
     @Override
