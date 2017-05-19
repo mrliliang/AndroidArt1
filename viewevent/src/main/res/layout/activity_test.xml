@@ -19,7 +19,8 @@
     <com.liang.viewevent.ui.TestButton
         android:id="@+id/button2"
         android:layout_width="100dp"
-        android:layout_height="100dp"/>
+        android:layout_height="100dp"
+        android:background="#000000"/>
 
     <EditText
         android:layout_width="150dp"

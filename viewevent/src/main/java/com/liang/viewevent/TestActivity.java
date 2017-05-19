@@ -7,9 +7,10 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.Toast;
+
+import com.nineoldandroids.animation.ValueAnimator;
 
 public class TestActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener{
 
@@ -53,7 +54,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
     private void initView() {
         mButton1 = (Button) findViewById(R.id.button1);
         mButton1.setOnClickListener(this);
-        mButton2 = (TextView) findViewById(R.id.button2);
+        mButton2 = findViewById(R.id.button2);
         mButton2.setOnLongClickListener(this);
     }
 
@@ -74,15 +75,27 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         if (v == mButton1) {
-//            mButton1.setTranslationX(100);
+            mButton1.setTranslationX(100);
 //            Log.d(TAG, "button1.left=" + mButton1.getLeft());
 //            Log.d(TAG, "button1.x=" + mButton1.getX());
 //            ObjectAnimator.ofFloat(mButton1, "translationX", 0, 100).setDuration(1000).start();
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) mButton1.getLayoutParams();
-            params.width += 100;
-            params.leftMargin += 100;
-            mButton1.requestLayout();
-            mButton1.setLayoutParams(params);
+//            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) mButton1.getLayoutParams();
+//            params.width += 100;
+//            params.leftMargin += 100;
+//            mButton1.requestLayout();
+//            mButton1.setLayoutParams(params);
+
+             final int startX = 0;
+             final int deltaX = 100;
+             ValueAnimator animator = ValueAnimator.ofInt(0, 1).setDuration(1000);
+             animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                 @Override
+                 public void onAnimationUpdate(ValueAnimator animator) {
+                     float fraction = animator.getAnimatedFraction();
+                     mButton1.scrollTo(startX + (int) (deltaX * fraction), 0);
+                 }
+             });
+             animator.start();
 
 //            mHandler.sendEmptyMessageDelayed(MESSAGE_SCROLL_TO, DELAY_TIME);
         }
@@ -90,6 +103,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onLongClick(View v) {
-        return false;
+        Toast.makeText(this, "long click", Toast.LENGTH_SHORT).show();
+        return true;
     }
 }
