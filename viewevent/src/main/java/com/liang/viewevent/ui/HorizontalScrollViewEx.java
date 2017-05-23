@@ -1,22 +1,22 @@
 package com.liang.viewevent.ui;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.text.TextPaint;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.ViewGroup;
-
-import com.liang.viewevent.R;
+import android.widget.Scroller;
 
 
 /**
  * TODO: document your custom view class.
  */
 public class HorizontalScrollViewEx extends ViewGroup {
+
     private String mExampleString; // TODO: use a default from R.string...
     private int mExampleColor = Color.RED; // TODO: use a default from R.color...
     private float mExampleDimension = 0; // TODO: use a default from R.dimen...
@@ -25,6 +25,22 @@ public class HorizontalScrollViewEx extends ViewGroup {
     private TextPaint mTextPaint;
     private float mTextWidth;
     private float mTextHeight;
+
+    private static final String TAG = HorizontalScrollViewEx.class.getSimpleName();
+
+    private int mChildrenSize;
+    private int mChildWidth;
+    private int mChildIndex;
+
+    private int mLastX;
+    private int mLastY;
+
+    private int mLastXIntercept;
+    private int mLastYIntercept;
+
+    private Scroller mScroller;
+    private VelocityTracker mVelocityTracker;
+
 
     public HorizontalScrollViewEx(Context context) {
         super(context);
@@ -41,51 +57,117 @@ public class HorizontalScrollViewEx extends ViewGroup {
         init(attrs, defStyle);
     }
 
+    private void init(AttributeSet attrs, int defStyle) {
+        mScroller = new Scroller(getContext());
+        mVelocityTracker = VelocityTracker.obtain();
+
+//        // Load attributes
+//        final TypedArray a = getContext().obtainStyledAttributes(
+//                attrs, R.styleable.HorizontalScrollViewEx, defStyle, 0);
+//
+//        mExampleString = a.getString(
+//                R.styleable.HorizontalScrollViewEx_exampleString);
+//        mExampleColor = a.getColor(
+//                R.styleable.HorizontalScrollViewEx_exampleColor,
+//                mExampleColor);
+//        // Use getDimensionPixelSize or getDimensionPixelOffset when dealing with
+//        // values that should fall on pixel boundaries.
+//        mExampleDimension = a.getDimension(
+//                R.styleable.HorizontalScrollViewEx_exampleDimension,
+//                mExampleDimension);
+//
+//        if (a.hasValue(R.styleable.HorizontalScrollViewEx_exampleDrawable)) {
+//            mExampleDrawable = a.getDrawable(
+//                    R.styleable.HorizontalScrollViewEx_exampleDrawable);
+//            mExampleDrawable.setCallback(this);
+//        }
+
+//        a.recycle();
+
+        // Set up a default TextPaint object
+//        mTextPaint = new TextPaint();
+//        mTextPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
+//        mTextPaint.setTextAlign(Paint.Align.LEFT);
+
+        // Update TextPaint and text measurements from attributes
+//        invalidateTextPaintAndMeasurements();
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent event) {
+        boolean intercepted = false;
+        int x = (int) event.getX();
+        int y = (int) event.getY();
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                intercepted = false;
+                if (!mScroller.isFinished()) {
+                    mScroller.abortAnimation();
+                    intercepted = true;
+                }
+                break;
+            case MotionEvent.ACTION_MOVE:
+                int deltaX = x - mLastX;
+                int deltaY = y - mLastY;
+                scrollBy(-deltaX, 0);
+                break;
+            case MotionEvent.ACTION_UP:
+                int scrollX = getScrollX();
+                int scrollToChildIndex = scrollX / mChildWidth;
+                mVelocityTracker.computeCurrentVelocity(1000);
+                float xVelocity = mVelocityTracker.getXVelocity();
+                if (Math.abs(xVelocity) >= 50) {
+                    mChildIndex = xVelocity > 0 ? mChildIndex - 1 : mChildIndex + 1;
+                } else {
+                    mChildIndex = (scrollX + mChildIndex / 2) / mChildWidth;
+                }
+                mChildIndex = Math.max(0, Math.min(mChildIndex, mChildrenSize - 1));
+                int dx = mChildIndex * mChildWidth - scrollX;
+                smoothScrollBy(dx, 0);
+                mVelocityTracker.clear();
+                break;
+            default:
+                break;
+        }
+        return super.onInterceptTouchEvent(event);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return super.onTouchEvent(event);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
 
     }
 
-    private void init(AttributeSet attrs, int defStyle) {
-        // Load attributes
-        final TypedArray a = getContext().obtainStyledAttributes(
-                attrs, R.styleable.HorizontalScrollViewEx, defStyle, 0);
+    private void smoothScrollBy(int dx, int dy) {
+        mScroller.startScroll(getScrollX(), 0, dx, 0, 500);
+        invalidate();
+    }
 
-        mExampleString = a.getString(
-                R.styleable.HorizontalScrollViewEx_exampleString);
-        mExampleColor = a.getColor(
-                R.styleable.HorizontalScrollViewEx_exampleColor,
-                mExampleColor);
-        // Use getDimensionPixelSize or getDimensionPixelOffset when dealing with
-        // values that should fall on pixel boundaries.
-        mExampleDimension = a.getDimension(
-                R.styleable.HorizontalScrollViewEx_exampleDimension,
-                mExampleDimension);
-
-        if (a.hasValue(R.styleable.HorizontalScrollViewEx_exampleDrawable)) {
-            mExampleDrawable = a.getDrawable(
-                    R.styleable.HorizontalScrollViewEx_exampleDrawable);
-            mExampleDrawable.setCallback(this);
+    @Override
+    public void computeScroll() {
+        if (mScroller.computeScrollOffset()) {
+            scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
+            postInvalidate();
         }
-
-        a.recycle();
-
-        // Set up a default TextPaint object
-        mTextPaint = new TextPaint();
-        mTextPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
-        mTextPaint.setTextAlign(Paint.Align.LEFT);
-
-        // Update TextPaint and text measurements from attributes
-        invalidateTextPaintAndMeasurements();
     }
 
     private void invalidateTextPaintAndMeasurements() {
-        mTextPaint.setTextSize(mExampleDimension);
-        mTextPaint.setColor(mExampleColor);
-        mTextWidth = mTextPaint.measureText(mExampleString);
-
-        Paint.FontMetrics fontMetrics = mTextPaint.getFontMetrics();
-        mTextHeight = fontMetrics.bottom;
+//        mTextPaint.setTextSize(mExampleDimension);
+//        mTextPaint.setColor(mExampleColor);
+//        mTextWidth = mTextPaint.measureText(mExampleString);
+//
+//        Paint.FontMetrics fontMetrics = mTextPaint.getFontMetrics();
+//        mTextHeight = fontMetrics.bottom;
     }
 
     @Override
@@ -94,26 +176,26 @@ public class HorizontalScrollViewEx extends ViewGroup {
 
         // TODO: consider storing these as member variables to reduce
         // allocations per draw cycle.
-        int paddingLeft = getPaddingLeft();
-        int paddingTop = getPaddingTop();
-        int paddingRight = getPaddingRight();
-        int paddingBottom = getPaddingBottom();
+//        int paddingLeft = getPaddingLeft();
+//        int paddingTop = getPaddingTop();
+//        int paddingRight = getPaddingRight();
+//        int paddingBottom = getPaddingBottom();
+//
+//        int contentWidth = getWidth() - paddingLeft - paddingRight;
+//        int contentHeight = getHeight() - paddingTop - paddingBottom;
 
-        int contentWidth = getWidth() - paddingLeft - paddingRight;
-        int contentHeight = getHeight() - paddingTop - paddingBottom;
-
-        // Draw the text.
-        canvas.drawText(mExampleString,
-                paddingLeft + (contentWidth - mTextWidth) / 2,
-                paddingTop + (contentHeight + mTextHeight) / 2,
-                mTextPaint);
-
-        // Draw the example drawable on top of the text.
-        if (mExampleDrawable != null) {
-            mExampleDrawable.setBounds(paddingLeft, paddingTop,
-                    paddingLeft + contentWidth, paddingTop + contentHeight);
-            mExampleDrawable.draw(canvas);
-        }
+//        // Draw the text.
+//        canvas.drawText(mExampleString,
+//                paddingLeft + (contentWidth - mTextWidth) / 2,
+//                paddingTop + (contentHeight + mTextHeight) / 2,
+//                mTextPaint);
+//
+//        // Draw the example drawable on top of the text.
+//        if (mExampleDrawable != null) {
+//            mExampleDrawable.setBounds(paddingLeft, paddingTop,
+//                    paddingLeft + contentWidth, paddingTop + contentHeight);
+//            mExampleDrawable.draw(canvas);
+//        }
     }
 
     /**
