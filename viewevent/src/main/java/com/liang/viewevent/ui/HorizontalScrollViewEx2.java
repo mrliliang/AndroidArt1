@@ -12,12 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Scroller;
 
-
 /**
- * TODO: document your custom view class.
+ * Created by liliang on 2017/5/24.
  */
-public class HorizontalScrollViewEx extends ViewGroup {
 
+public class HorizontalScrollViewEx2 extends ViewGroup {
     private String mExampleString; // TODO: use a default from R.string...
     private int mExampleColor = Color.RED; // TODO: use a default from R.color...
     private float mExampleDimension = 0; // TODO: use a default from R.dimen...
@@ -27,7 +26,7 @@ public class HorizontalScrollViewEx extends ViewGroup {
     private float mTextWidth;
     private float mTextHeight;
 
-    private static final String TAG = HorizontalScrollViewEx.class.getSimpleName();
+    private static final String TAG = HorizontalScrollViewEx2.class.getSimpleName();
 
     private int mChildrenSize;
     private int mChildWidth;
@@ -43,17 +42,17 @@ public class HorizontalScrollViewEx extends ViewGroup {
     private VelocityTracker mVelocityTracker;
 
 
-    public HorizontalScrollViewEx(Context context) {
+    public HorizontalScrollViewEx2(Context context) {
         super(context);
         init(null, 0);
     }
 
-    public HorizontalScrollViewEx(Context context, AttributeSet attrs) {
+    public HorizontalScrollViewEx2(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(attrs, 0);
     }
 
-    public HorizontalScrollViewEx(Context context, AttributeSet attrs, int defStyle) {
+    public HorizontalScrollViewEx2(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(attrs, defStyle);
     }
@@ -96,39 +95,22 @@ public class HorizontalScrollViewEx extends ViewGroup {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
-        boolean intercepted = false;
+
         int x = (int) event.getX();
         int y = (int) event.getY();
 
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                intercepted = false;
-                if (!mScroller.isFinished()) {
-                    mScroller.abortAnimation();
-                    intercepted = true;
-                }
-                break;
-            case MotionEvent.ACTION_MOVE:
-                int deltaX = x - mLastXIntercept;
-                int deltaY = y - mLastYIntercept;
-                if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                    intercepted = true;
-                } else {
-                    intercepted = false;
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-                intercepted = false;
-                break;
-            default:
-                break;
+        int action = event.getAction();
+        if (action == MotionEvent.ACTION_DOWN) {
+            mLastX = x;
+            mLastY = y;
+            if (!mScroller.isFinished()) {
+                mScroller.abortAnimation();
+                return true;
+            }
+            return false;
+        } else {
+            return true;
         }
-
-        mLastX = x;
-        mLastY = y;
-        mLastXIntercept = x;
-        mLastYIntercept = y;
-        return intercepted;
     }
 
     @Override
@@ -347,4 +329,5 @@ public class HorizontalScrollViewEx extends ViewGroup {
     public void setExampleDrawable(Drawable exampleDrawable) {
         mExampleDrawable = exampleDrawable;
     }
+
 }

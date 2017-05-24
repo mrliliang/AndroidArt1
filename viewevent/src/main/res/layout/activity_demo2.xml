@@ -7,4 +7,8 @@
     android:layout_height="match_parent"
     tools:context="com.liang.viewevent.DemoActivity2">
 
+    <com.liang.viewevent.ui.HorizontalScrollViewEx2
+        android:id="@+id/container"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"/>
 </android.support.constraint.ConstraintLayout>
