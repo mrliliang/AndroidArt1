@@ -73,7 +73,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
                     .setWhen(System.currentTimeMillis())
                     .setAutoCancel(true)
                     .setContentIntent(pendingIntent)
-                    .setCustomContentView(remoteViews)
+                    .setContent(remoteViews)
                     .build();
             NotificationManager manager = (NotificationManager)getSystemService(Context
                     .NOTIFICATION_SERVICE);
