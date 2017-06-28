@@ -1,4 +1,4 @@
-package com.example.ipc;
+package com.example.drawable;
 
 import org.junit.Test;
 
