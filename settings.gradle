@@ -1,1 +1,1 @@
-include ':app', ':jnitestapp', ':bitmapcache', ':ipc', ':viewevent', ':viewpolicy', ':remoteview', ':drawable'
+include ':app', ':jnitestapp', ':bitmapcache', ':ipc', ':viewevent', ':viewpolicy', ':remoteview', ':drawable', ':window', ':threadpool'
