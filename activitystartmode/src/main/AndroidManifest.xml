@@ -21,11 +21,13 @@
         </activity>
         <activity android:name=".SecondActivity"
             android:launchMode="singleTask"
-            android:taskAffinity="com.liang.task1">
+            android:taskAffinity="com.liang.task1"
+            android:label="Activity_2">
         </activity>
         <activity android:name=".ThirdActivity"
                   android:launchMode="singleTask"
-            android:taskAffinity="com.liang.task1">
+            android:taskAffinity="com.liang.task1"
+            android:label="Activity_3">
             <intent-filter>
                 <action android:name="com.liang.activity.action.c"/>
                 <action android:name="com.liang.activity.action.d"/>
@@ -33,6 +35,8 @@
                 <category android:name="com.liang.activity.category.c"/>
                 <category android:name="com.liang.activity.category.d"/>
                 <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="text/plain"/>
             </intent-filter>
         </activity>
     </application>

@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,12 +22,16 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "[onCreate] restore extra_test: " + test);
         }
 
-        findViewById(R.id.button1).setOnClickListener(v -> {
-            Intent intent = new Intent("com.liang.activity.action.c");
-            intent.putExtra("time", System.currentTimeMillis());
-            intent.addCategory("com.liang.activity.category.c");
-            intent.setDataAndType(Uri.parse("file://abc"), "text/plain");
-            startActivity(intent);
+        findViewById(R.id.button1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent("com.liang.activity.action.c");
+                intent.setClass(MainActivity.this, SecondActivity.class);
+                intent.putExtra("time", System.currentTimeMillis());
+                intent.addCategory("com.liang.activity.category.c");
+                intent.setDataAndType(Uri.parse("file://abc"), "text/plain");
+                MainActivity.this.startActivity(intent);
+            }
         });
     }
 
